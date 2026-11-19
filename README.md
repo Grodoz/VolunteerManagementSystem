@@ -4,6 +4,7 @@ A portfolio project demonstrating the complete software lifecycle, from requirem
 
 ## Project Overview
 
+![Data Quality Dashboard](VMS Dashboard.png)
 The Volunteer Management System (VMS) is a web-based application designed to manage volunteers, events, attendance tracking, and data quality monitoring.
 
 The application was created as a portfolio project to showcase skills in:
@@ -41,6 +42,7 @@ The Volunteer Management System addresses these challenges through centralized d
 
 ### Volunteer Management
 
+![Volunteer Management](VMS Volunteers Screen.png)
 - Create volunteers
 - Update volunteer records
 - View volunteer information
@@ -48,6 +50,7 @@ The Volunteer Management System addresses these challenges through centralized d
 
 ### Data Quality Dashboard
 
+![Data Quality Dashboard](VMS DQ Dashboard.png)
 - Detect duplicate email addresses
 - Identify missing email addresses
 - Identify invalid phone numbers
