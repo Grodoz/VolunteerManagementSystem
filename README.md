@@ -50,7 +50,7 @@ The Volunteer Management System addresses these challenges through centralized d
 
 ### Data Quality Dashboard
 
-![Data Quality Dashboard](VMS DQ Dashboard.png)
+![Data Quality Dashboard](https://github.com/Grodoz/VolunteerManagementSystem/blob/master/VMS%20DQ%20Dashboard.png)
 - Detect duplicate email addresses
 - Identify missing email addresses
 - Identify invalid phone numbers
