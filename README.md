@@ -42,7 +42,7 @@ The Volunteer Management System addresses these challenges through centralized d
 
 ### Volunteer Management
 
-![Volunteer Management](VMS Volunteers Screen.png)
+![Volunteer Management](https://github.com/Grodoz/VolunteerManagementSystem/blob/master/VMS%20Volunteers%20Screen.png)
 - Create volunteers
 - Update volunteer records
 - View volunteer information
