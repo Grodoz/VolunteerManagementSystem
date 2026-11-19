@@ -1,0 +1,217 @@
+﻿@model VolunteerManagementSystem.ViewModels.DashboardViewModel
+
+@{
+    ViewData["Title"] = "Dashboard";
+}
+
+<div class="container-fluid">
+
+    <div class="row mb-4">
+        <div class="col">
+            <h1 class="display-5">Volunteer Management Dashboard</h1>
+            <p class="text-muted">
+                Operational Metrics and Data Quality Overview
+            </p>
+        </div>
+    </div>
+
+    <div class="row g-4">
+
+        <!-- Total Volunteers -->
+        <div class="col-md-3">
+            <div class="card text-white bg-primary shadow-sm">
+                <div class="card-body">
+                    <h6 class="card-title">
+                        Total Volunteers
+                    </h6>
+
+                    <h2 class="display-6">
+                        @Model.TotalVolunteers
+                    </h2>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quality Score -->
+        <div class="col-md-3">
+            <div class="card text-white bg-success shadow-sm">
+                <div class="card-body">
+                    <h6 class="card-title">
+                        Data Quality Score
+                    </h6>
+
+                    <h2 class="display-6">
+                        @Model.QualityScore%
+                    </h2>
+                </div>
+            </div>
+        </div>
+
+        <!-- Duplicate Emails -->
+        <div class="col-md-3">
+            <div class="card text-dark bg-warning shadow-sm">
+                <div class="card-body">
+                    <h6 class="card-title">
+                        Duplicate Emails
+                    </h6>
+
+                    <h2 class="display-6">
+                        @Model.DuplicateEmails
+                    </h2>
+                </div>
+            </div>
+        </div>
+
+        <!-- Missing Emails -->
+        <div class="col-md-3">
+            <div class="card text-white bg-danger shadow-sm">
+                <div class="card-body">
+                    <h6 class="card-title">
+                        Missing Emails
+                    </h6>
+
+                    <h2 class="display-6">
+                        @Model.MissingEmails
+                    </h2>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="row mt-5">
+
+        <div class="col-md-6">
+            <div class="card shadow-sm">
+
+                <div class="card-header">
+                    Data Quality Summary
+                </div>
+
+                <div class="card-body">
+
+                    <table class="table table-striped">
+
+                        <thead>
+                            <tr>
+                                <th>Metric</th>
+                                <th>Value</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+
+                            <tr>
+                                <td>Total Volunteers</td>
+                                <td>@Model.TotalVolunteers</td>
+                            </tr>
+
+                            <tr>
+                                <td>Duplicate Emails</td>
+                                <td>@Model.DuplicateEmails</td>
+                            </tr>
+
+                            <tr>
+                                <td>Missing Emails</td>
+                                <td>@Model.MissingEmails</td>
+                            </tr>
+
+                            <tr>
+                                <td>Invalid Phone Numbers</td>
+                                <td>@Model.InvalidPhoneNumbers</td>
+                            </tr>
+
+                            <tr>
+                                <td>Total Quality Issues</td>
+                                <td>@Model.OpenDataQualityIssues</td>
+                            </tr>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+        </div>
+
+        <div class="col-md-6">
+
+            <div class="card shadow-sm">
+
+                <div class="card-header">
+                    Data Quality Assessment
+                </div>
+
+                <div class="card-body">
+
+                    @if (Model.QualityScore >= 90)
+                    {
+                        <div class="alert alert-success">
+                            Excellent Data Quality
+                        </div>
+                    }
+                    else if (Model.QualityScore >= 75)
+                    {
+                        <div class="alert alert-warning">
+                            Moderate Data Quality Issues Detected
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="alert alert-danger">
+                            Significant Data Quality Issues Detected
+                        </div>
+                    }
+
+                    <h5>Quality Score</h5>
+
+                    <div class="progress" style="height:30px;">
+
+                        <div class="progress-bar bg-success"
+                             role="progressbar"
+                             style="width:@Model.QualityScore%">
+
+                            @Model.QualityScore%
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="card mt-4 shadow-sm">
+
+                <div class="card-header">
+                    Quick Navigation
+                </div>
+
+                <div class="card-body">
+
+                    <div class="d-grid gap-2">
+
+                        <a asp-controller="Volunteers"
+                           asp-action="Index"
+                           class="btn btn-outline-primary">
+                            Manage Volunteers
+                        </a>
+
+                        <a asp-controller="DataQuality"
+                           asp-action="Index"
+                           class="btn btn-outline-success">
+                            Data Quality Dashboard
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
