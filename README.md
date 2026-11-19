@@ -4,7 +4,7 @@ A portfolio project demonstrating the complete software lifecycle, from requirem
 
 ## Project Overview
 
-![Data Quality Dashboard](VMS Dashboard.png)
+![Data Quality Dashboard](https://github.com/Grodoz/VolunteerManagementSystem/blob/master/VMS%20DQ%20Dashboard.png)
 The Volunteer Management System (VMS) is a web-based application designed to manage volunteers, events, attendance tracking, and data quality monitoring.
 
 The application was created as a portfolio project to showcase skills in:
