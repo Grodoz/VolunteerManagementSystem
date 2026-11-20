@@ -11,7 +11,8 @@ namespace VolunteerManagementSystem.Data
         }
 
         public DbSet<Volunteer> Volunteers { get; set; }
-        public DbSet<Event> Events { get; set; }
+        public DbSet<VolunteerEvents> Events { get; set; }
+        public DbSet<Registration> Registrations { get; set; }
 
     }
 }
