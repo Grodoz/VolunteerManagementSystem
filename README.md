@@ -79,7 +79,7 @@ The project was built to demonstrate application development, systems analysis, 
 
 ### Attendance Management
 
-![Attendance Management](docs/screenshots/attendance.png)
+![Attendance Management](https://github.com/Grodoz/VolunteerManagementSystem/blob/master/msedge_qq7KXtFmnZ.png)
 
 ### Volunteer Hours Report
 
