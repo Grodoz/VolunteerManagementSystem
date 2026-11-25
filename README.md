@@ -67,7 +67,7 @@ The project was built to demonstrate application development, systems analysis, 
 
 ### Executive Dashboard
 
-![Executive Dashboard](docs/screenshots/dashboard.png)
+![Executive Dashboard](https://github.com/Grodoz/VolunteerManagementSystem/blob/master/msedge_LJ6q2viJIP.png)
 
 ### Volunteer Management
 
