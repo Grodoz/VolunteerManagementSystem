@@ -130,7 +130,7 @@ EventId (FK)
 
 Add ERD image here:
 
-![ERD](docs/diagrams/erd.png)
+![ERD](https://github.com/Grodoz/VolunteerManagementSystem/blob/master/SSMS_9FqHjKkXIF.png)
 
 ---
 
