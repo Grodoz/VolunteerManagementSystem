@@ -1,40 +1,23 @@
-# Volunteer Management System & Data Quality Dashboard
+# Volunteer Management System
 
-A portfolio project demonstrating the complete software lifecycle, from requirements analysis and system design through application development, testing, support operations, and data quality management.
+ASP.NET Core MVC | Entity Framework Core | SQL Server
 
-## Project Overview
-
-![Data Quality Dashboard](https://github.com/Grodoz/VolunteerManagementSystem/blob/master/VMS%20Dashboard.png)
-The Volunteer Management System (VMS) is a web-based application designed to manage volunteers, events, attendance tracking, and data quality monitoring.
-
-The application was created as a portfolio project to showcase skills in:
-
-- Application Support
-- Systems Analysis
-- Business Analysis
-- Data Quality Management
-- ASP.NET Development
-- SQL Server Database Design
-- Software Testing
-- Incident Management
-- Technical Documentation
+A portfolio project demonstrating volunteer management, attendance tracking, data quality monitoring, operational reporting, and business rule enforcement.
 
 ---
 
-## Business Problem
+## Overview
 
-Many volunteer organizations rely on spreadsheets, email communication, and paper-based processes to manage volunteers and events.
+The Volunteer Management System (VMS) is a web-based application designed to manage:
 
-These methods often result in:
+- Volunteers
+- Events
+- Registrations
+- Attendance
+- Data Quality Metrics
+- Operational Reporting
 
-- Duplicate records
-- Missing contact information
-- Reporting inaccuracies
-- Manual administrative effort
-- Poor data quality
-- Limited visibility into operational metrics
-
-The Volunteer Management System addresses these challenges through centralized data management and automated quality monitoring.
+The project was built to demonstrate application development, systems analysis, information quality management, and application support skills.
 
 ---
 
@@ -42,259 +25,332 @@ The Volunteer Management System addresses these challenges through centralized d
 
 ### Volunteer Management
 
-![Volunteer Management](https://github.com/Grodoz/VolunteerManagementSystem/blob/master/VMS%20Volunteers%20Screen.png)
-- Create volunteers
-- Update volunteer records
-- View volunteer information
-- Delete volunteer records
+- Create Volunteers
+- Edit Volunteers
+- Delete Volunteers
+- Volunteer Search
+
+### Event Management
+
+- Create Events
+- Event Capacity Tracking
+- Event Status Management
+
+### Registration Management
+
+- Register Volunteers for Events
+- Prevent Duplicate Registrations
+- Registration Status Tracking
+
+### Attendance Tracking
+
+- Record Attendance
+- Track Volunteer Hours
+- Attendance Status Tracking
 
 ### Data Quality Dashboard
 
-![Data Quality Dashboard](https://github.com/Grodoz/VolunteerManagementSystem/blob/master/VMS%20DQ%20Dashboard.png)
-- Detect duplicate email addresses
-- Identify missing email addresses
-- Identify invalid phone numbers
-- Calculate overall data quality score
-- Monitor data quality trends
+- Duplicate Registration Detection
+- Missing Contact Information
+- Attendance Exceptions
+- Capacity Alerts
 
-### Operational Dashboard
+### Reporting
 
-- Total volunteer count
-- Data quality score
-- Open data quality issues
-- Quality assessment indicators
+- Volunteer Hours Leaderboard
+- Registration Metrics
+- Attendance Metrics
+
+---
+
+## Screenshots
+
+### Executive Dashboard
+
+![Executive Dashboard](docs/screenshots/dashboard.png)
+
+### Volunteer Management
+
+![Volunteer Management](docs/screenshots/volunteers.png)
+
+### Registration Dashboard
+
+![Registration Dashboard](docs/screenshots/registrations.png)
+
+### Attendance Management
+
+![Attendance Management](docs/screenshots/attendance.png)
+
+### Volunteer Hours Report
+
+![Volunteer Hours Report](docs/screenshots/volunteer-hours.png)
+
+---
+
+## System Architecture
+
+```text
+Volunteer
+    │
+    ▼
+Registration
+    ▲
+    │
+Event
+    │
+    ▼
+Attendance
+```
+
+---
+
+## Entity Relationship Diagram
+
+```text
+Volunteers
+----------
+VolunteerId (PK)
+
+Events
+------
+EventId (PK)
+
+Registrations
+-------------
+RegistrationId (PK)
+VolunteerId (FK)
+EventId (FK)
+
+Attendance
+----------
+AttendanceId (PK)
+VolunteerId (FK)
+EventId (FK)
+```
+
+Add ERD image here:
+
+![ERD](docs/diagrams/erd.png)
+
+---
+
+## Business Rules
+
+### Registration Rules
+
+- Volunteer must exist
+- Event must exist
+- Volunteer may not register twice for the same event
+- Event capacity may not be exceeded
+
+### Attendance Rules
+
+- Volunteer must exist
+- Event must exist
+- One attendance record per volunteer/event
+- Hours served must be between 0 and 24
+
+### Data Quality Rules
+
+- Volunteer email addresses must be unique
+- Duplicate registrations are prohibited
+- Invalid attendance entries are identified
+- Capacity exceptions are monitored
+
+---
+
+## Data Quality Controls
+
+| Control | Type |
+|----------|----------|
+| Unique Volunteer Email | Unique Index |
+| Volunteer Registration Uniqueness | Composite Unique Index |
+| Attendance Uniqueness | Composite Unique Index |
+| Volunteer Foreign Key | Referential Integrity |
+| Event Foreign Key | Referential Integrity |
+| Attendance Status Validation | Check Constraint |
+| Hours Validation | Check Constraint |
+
+---
+
+## Operational Dashboards
+
+### Registration Dashboard
+
+Metrics:
+
+- Total Registrations
+- Registered
+- Waitlisted
+- Cancelled
+
+### Capacity Monitoring
+
+Identifies:
+
+- Events above 80% capacity
+- Potential overbooking risk
+
+### Attendance Exceptions
+
+Identifies:
+
+- Present with Zero Hours
+- Attendance Without Registration
+- Excessive Hours
+- Missing Status
+
+---
+
+## Reports
+
+### Volunteer Hours Leaderboard
+
+Displays:
+
+- Volunteer Rank
+- Total Hours Served
+- Events Attended
+
+### Attendance Analytics
+
+Displays:
+
+- Present Count
+- Absent Count
+- Excused Count
+- Total Volunteer Hours
 
 ---
 
 ## Technology Stack
 
-### Frontend
+### Front-End
 
-- ASP.NET Core MVC
 - Razor Views
 - Bootstrap 5
 
-### Backend
+### Back-End
 
+- ASP.NET Core MVC
 - C#
-- ASP.NET Core
 
 ### Database
 
-- SQL Server LocalDB
+- SQL Server
 - Entity Framework Core
 
 ### Development Tools
 
-- Visual Studio 2026 Community
-- SQL Server Management Studio (SSMS)
+- Visual Studio
+- SQL Server Management Studio
 - Git
 - GitHub
 
 ---
 
-## Solution Architecture
+## Database Constraints
 
-```text
-Browser
-    |
-    v
-ASP.NET MVC
-    |
-    v
-Entity Framework Core
-    |
-    v
-SQL Server
+### Volunteers
+
+```sql
+UNIQUE (EmailAddress)
+```
+
+### Registrations
+
+```sql
+UNIQUE (VolunteerId, EventId)
+```
+
+### Attendance
+
+```sql
+UNIQUE (VolunteerId, EventId)
+```
+
+### Status Validation
+
+```sql
+CHECK AttendanceStatus
+```
+
+```sql
+CHECK RegistrationStatus
 ```
 
 ---
 
-## Current Application Structure
+## Reporting Examples
+
+Example Volunteer Leaderboard:
 
 ```text
-VolunteerManagementSystem
+Rank  Volunteer            Hours
 
-├── Controllers
-│   ├── HomeController
-│   ├── VolunteersController
-│   └── DataQualityController
-│
-├── Models
-│   └── Volunteer
-│
-├── ViewModels
-│   ├── DashboardViewModel
-│   └── DataQualityDashboardViewModel
-│
-├── Data
-│   └── VolunteerManagementContext
-│
-├── Views
-│   ├── Home
-│   ├── Volunteers
-│   └── DataQuality
-│
-└── SQL Server Database
+1     Richard Broyles      84.5
+
+2     John Smith           67.0
+
+3     Mary Jones           52.0
 ```
 
 ---
 
-## Data Quality Metrics
+## Test Data
 
-The application currently measures:
+A synthetic data generator script is included.
 
-### Completeness
+Populates:
 
-Measures missing required information.
+- Volunteers
+- Events
+- Registrations
+- Attendance
 
-Examples:
-
-- Missing email addresses
-- Missing phone numbers
-
-### Validity
-
-Measures whether values meet defined business rules.
-
-Examples:
-
-- Phone numbers below minimum length
-- Invalid email formats
-
-### Uniqueness
-
-Measures duplicate records.
-
-Examples:
-
-- Duplicate email addresses
-- Duplicate volunteer profiles
-
----
-
-## Dashboard Metrics
-
-The dashboard calculates and displays:
-
-- Total Volunteers
-- Duplicate Emails
-- Missing Emails
-- Invalid Phone Numbers
-- Open Data Quality Issues
-- Data Quality Score
+Also generates sample data-quality exceptions for testing dashboards.
 
 ---
 
 ## Future Enhancements
 
-### Event Management
-
-- Create Events
-- Edit Events
-- Event Capacity Tracking
-
-### Volunteer Registration
-
-- Register Volunteers for Events
-- Wait List Management
-- Registration Status Tracking
-
-### Attendance Tracking
-
-- Event Attendance
-- Volunteer Hours Tracking
-- Participation Reporting
-
-### Application Support Features
-
-- Incident Dashboard
-- Failed Login Monitoring
-- System Health Dashboard
-- Audit Logging
-
-### Data Quality Enhancements
-
-- Data Profiling Reports
-- Duplicate Detection Engine
-- Automated Quality Rules
-- Data Steward Workflow
-
----
-
-## Documentation
-
-This project includes extensive portfolio documentation demonstrating software lifecycle artifacts.
-
-### Requirements Analysis
-
-- Business Requirements Document (BRD)
-- User Stories
-- Process Flows
-- Requirements Traceability Matrix
-
-### Testing
-
-- Test Cases
-- Bug Reports
-- Test Summary Reports
-
-### Operational Support
-
-- Incident Reports
-- User Lockout Runbook
-- API Troubleshooting Guide
-- Database Failure Runbook
-- Incident Severity Matrix
-
-### System Design
-
-- Entity Relationship Diagram (ERD)
-- System Architecture
-- Data Flow Documentation
+- Authentication & Authorization
+- Volunteer Certifications
+- Event Waitlists
+- Export to Excel
+- Advanced Analytics Dashboard
+- Volunteer Achievement Tracking
 
 ---
 
 ## Skills Demonstrated
 
-### Application Support
-
-- Incident Management
-- Root Cause Analysis
-- Troubleshooting
-- Production Support
-- Runbook Development
-
-### Systems Analysis
-
-- Requirements Analysis
-- Process Modeling
-- Data Modeling
-- Solution Design
-
-### Development
+### Software Development
 
 - ASP.NET Core MVC
 - C#
 - Entity Framework Core
 - SQL Server
-- Bootstrap
+
+### Systems Analysis
+
+- Business Rule Definition
+- Relational Database Design
+- Process Modeling
 
 ### Data Quality
 
 - Data Profiling
+- Exception Reporting
+- Constraint Enforcement
 - Data Validation
-- Duplicate Detection
-- Quality Metrics
-- Information Quality Management
 
----
+### Application Support
 
-## Portfolio Disclaimer
-
-This application was created as a professional portfolio project to demonstrate software engineering, application support, systems analysis, and data quality management skills.
-
-The application, documentation, incident reports, test cases, and supporting artifacts are fictional and do not contain proprietary or confidential information from any employer, client, or organization.
+- Operational Dashboards
+- Monitoring Metrics
+- Incident Analysis Concepts
+- Data Quality Monitoring
 
 ---
 
@@ -302,13 +358,12 @@ The application, documentation, incident reports, test cases, and supporting art
 
 Richard Broyles
 
-MS Information Quality  
 BS Information Science
+MS Information Quality
 
-Areas of Interest:
+Focused on:
 
-- Application Support Engineering
 - Systems Analysis
-- Data Governance
+- Application Support
 - Data Quality Management
 - Software Development
