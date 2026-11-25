@@ -1,0 +1,63 @@
+﻿@model IEnumerable<VolunteerManagementSystem.ViewModels.VolunteerHoursViewModel>
+
+@{
+    ViewData["Title"] = "Volunteer Hours Leaderboard";
+}
+
+<h1>Volunteer Hours Leaderboard</h1>
+
+<div class="card shadow-sm">
+    <div class="card-body">
+        <div class="row mb-4">
+            <div class="col-md-4">
+                <div class="card bg-primary text-white">
+                    <div class="card body">
+                        <h6>Total Volunteers</h6>
+                        <h2>@Model.Count()</h2>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card bg-success text-white">
+                        <div class="card-body">
+                            <h6>Total Hours</h6>
+                            <h2>@Model.Sum(v => v.TotalHours)</h2>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card bg-info text-white">
+                        <div class="card-body">
+                            <h6>Average Hours</h6>
+                            <h2>@(Model.Any() ? Math.Round(Model.Average(v => v.TotalHours), 1) : 0)</h2>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Rank</th>
+                    <th>Volunteer</th>
+                    <th>Total Hours</th>
+                    <th>Events Attended</th>
+                </tr>
+            </thead>
+            <tbody>
+                @{
+                    var rank = 1;
+                }
+                @foreach (var volunteer in Model)
+                {
+                    <tr>
+                        <td>#@rank</td>
+                        <td>@volunteer.VolunteerName</td>
+                        <td>@volunteer.TotalHours</td>
+                        <td>@volunteer.EventsAttended</td>
+                    </tr>
+                    rank++;
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

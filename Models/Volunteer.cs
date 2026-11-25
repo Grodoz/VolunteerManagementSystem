@@ -14,6 +14,13 @@ namespace VolunteerManagementSystem.Models
             get;
             set;
         } = new List<Registration>();
+
+        public virtual ICollection<Attendance> AttendanceRecords
+        {
+            get;
+            set;
+        } = new List<Attendance>();
+
         [NotMapped]
         public string FullName
         {

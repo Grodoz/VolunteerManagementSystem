@@ -1,0 +1,40 @@
+@model IEnumerable<VolunteerManagementSystem.Models.Attendance>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Attendance Records</h1>
+<p>
+    <a asp-action="Create" class="btn btn-primary">Record Attendance</a>
+</p>
+
+<table class="table table-striped table-hover">
+    <thead class="table-dark">
+        <tr>
+            <th>Volunteer</th>
+            <th>Event</th>
+            <th>Attendance Status</th>
+            <th>Hours Served</th>
+            <th>Attendance Date</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.Volunteer?.FullName</td>
+                <td>@item.Event?.EventName</td>
+                <td>@item.AttendanceStatus</td>
+                <td>@item.HoursServed</td>
+                <td>@item.AttendanceDate.ToString("MM/dd/yyyy")</td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.AttendanceId" class="btn btn-sm btn-warning">Edit</a>
+                    <a asp-action="Details" asp-route-id="@item.AttendanceId" class="btn btn-sm btn-info">Details</a>
+                    <a asp-action="Delete" asp-route-id="@item.AttendanceId" class="btn btn-sm btn-danger">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

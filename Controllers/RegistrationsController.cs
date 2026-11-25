@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using VolunteerManagementSystem.Models;
 using VolunteerManagementSystem.Data;
+using VolunteerManagementSystem.ViewModels;
 
 public class RegistrationsController : Controller
 {
@@ -14,12 +15,57 @@ public class RegistrationsController : Controller
     }
 
     // GET: REGISTRATIONS
-    public async Task<IActionResult> Index()    
+    public async Task<IActionResult> Index(int? eventId, string? status)    
     {
-        var registrations = _context.Registrations
+        var query = _context.Registrations
             .Include(r => r.Volunteer)
-            .Include(r => r.Event);
-        return View(await registrations.ToListAsync());
+            .Include(r => r.Event)
+            .AsQueryable();
+        var attendanceRecords = await _context.Attendance.ToListAsync();
+        var presentZeroHours = attendanceRecords.Count(a => a.AttendanceStatus == "Present" && a.HoursServed == 0);
+        var excessiveHours = attendanceRecords.Count(a => a.HoursServed >= 12);
+        var missingStatus = attendanceRecords.Count(a => string.IsNullOrWhiteSpace(a.AttendanceStatus));
+        var attendanceWithoutRegistration = attendanceRecords.Count(a => !_context.Registrations.Any(r => r.VolunteerId == a.VolunteerId && r.EventId == a.EventId));
+        if (eventId.HasValue)
+        {
+            query = query.Where(r => r.EventId == eventId.Value);
+        }
+        if (!string.IsNullOrWhiteSpace(status))
+        {
+            query = query.Where(r => r.RegistrationStatus == status);
+        }
+        ViewBag.Events = new SelectList(_context.Events.OrderBy(e => e.EventName), "EventId", "EventName");
+        ViewBag.Statuses = new SelectList(new[] { "Registered", "Waitlisted", "Cancelled" });
+        var allRegistrations = await _context.Registrations.ToListAsync();
+        var capacityAlerts = _context.Events.Select(e => new
+        {
+            Event = e,
+            RegistrationCount = _context.Registrations.Count(r => r.EventId == e.EventId)
+        }).Where(x => x.RegistrationCount >= (x.Event.Capacity * 0.80)).ToList();
+        var model = new RegistrationIndexViewModel
+        {
+            Registrations = await query.ToListAsync(),
+            SelectedEventId = eventId,
+            SelectedStatus = status,
+            TotalRegistrations = allRegistrations.Count,
+            RegisteredCount = allRegistrations.Count(r => r.RegistrationStatus == "Registered"),
+            WaitlistedCount = allRegistrations.Count(r => r.RegistrationStatus == "Waitlisted"),
+            CancelledCount = allRegistrations.Count(r => r.RegistrationStatus == "Cancelled"),
+            NearCapacityEvents = capacityAlerts.Count,
+            CapacityAlerts = capacityAlerts.Select(x => $"{x.Event.EventName} ({x.RegistrationCount}/{x.Event.Capacity})").ToList(),
+            TotalAttendanceRecords = attendanceRecords.Count,
+            PresentCount = attendanceRecords.Count(a => a.AttendanceStatus == "Present"),
+            AbsentCount = attendanceRecords.Count(a => a.AttendanceStatus == "Absent"),
+            ExcusedCount = attendanceRecords.Count(a => a.AttendanceStatus == "Excused"),
+            TotalVolunteerHours = attendanceRecords.Sum(a => a.HoursServed),
+            PresentZeroHoursCount = presentZeroHours,
+            ExcessiveHoursCount = excessiveHours,
+            AttendanceWithoutRegistrationCount = attendanceWithoutRegistration,
+            MissingAttendanceStatusCount = missingStatus,
+            AttendanceExceptions = presentZeroHours + excessiveHours + attendanceWithoutRegistration + missingStatus,
+
+        };
+        return View(model);
     }
 
     // GET: REGISTRATIONS/Details/5
@@ -31,7 +77,9 @@ public class RegistrationsController : Controller
         }
 
         var registration = await _context.Registrations
-            .FirstOrDefaultAsync(m => m.RegistrationId == registrationid);
+            .Include(r => r.Volunteer)
+            .Include(r => r.Event)
+            .FirstOrDefaultAsync(r => r.RegistrationId == registrationid);
         if (registration == null)
         {
             return NotFound();
@@ -43,8 +91,7 @@ public class RegistrationsController : Controller
     // GET: REGISTRATIONS/Create
     public IActionResult Create()
     {
-        ViewData["VolunteerId"] = new SelectList(_context.Volunteers, "VolunteerId", "FullName");
-        ViewData["EventId"] = new SelectList(_context.Events, "EventId", "EventName");
+        LoadDropDowns();
         return View();
     }
 
@@ -55,14 +102,29 @@ public class RegistrationsController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Create([Bind("RegistrationId,VolunteerId,EventId,RegistrationDate,RegistrationStatus,Volunteer,Event")] Registration registration)
     {
+        var duplicateRegistration = _context.Registrations.Any(r => r.VolunteerId == registration.VolunteerId && r.EventId == registration.EventId);
+        if (duplicateRegistration)
+        {
+            ModelState.AddModelError("", "Volunteer is already registered for this event.");
+        }
+        var selectedEvent = await _context.Events
+            .FirstOrDefaultAsync(e => e.EventId == registration.EventId);
+        if (selectedEvent != null)
+        {
+            var eventRegistrationCount = _context.Registrations.Count(r => r.EventId == registration.EventId);
+            if (eventRegistrationCount >= selectedEvent.Capacity)
+            {
+                ModelState.AddModelError("", "The event has reached its maximum capacity.");
+            }
+        }
         if (ModelState.IsValid)
         {
+            registration.RegistrationDate = DateTime.Now;
             _context.Add(registration);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
-        ViewData["VolunteerId"] = new SelectList(_context.Volunteers, "VolunteerId", "FirstName", registration.VolunteerId);
-        ViewData["EventId"] = new SelectList(_context.Events, "EventId", "EventName", registration.EventId);
+        LoadDropDowns();
         return View(registration);
     }
 
@@ -94,6 +156,20 @@ public class RegistrationsController : Controller
             return NotFound();
         }
 
+        var duplicateRegistration = _context.Registrations.Any(r => r.RegistrationId != registration.RegistrationId && r.VolunteerId == registration.VolunteerId && r.EventId == registration.EventId);
+        if (duplicateRegistration)
+        {
+            ModelState.AddModelError("", "Volunteer is already registered for this event.");
+        }
+        var selectedEvent = await _context.Events.FirstOrDefaultAsync(e => e.EventId == registration.EventId);
+        if (selectedEvent != null)
+        {
+            var eventRegistrationCount = _context.Registrations.Count(r => r.EventId == registration.EventId && r.RegistrationId != registration.RegistrationId);
+            if (eventRegistrationCount >= selectedEvent.Capacity)
+            {
+                ModelState.AddModelError("", "The event has reached its maximum capacity.");
+            }
+        }
         if (ModelState.IsValid)
         {
             try
@@ -107,14 +183,13 @@ public class RegistrationsController : Controller
                 {
                     return NotFound();
                 }
-                else
-                {
-                    throw;
-                }
+                throw;
             }
             return RedirectToAction(nameof(Index));
         }
+        LoadDropDowns();
         return View(registration);
+        
     }
 
     // GET: REGISTRATIONS/Delete/5
@@ -125,8 +200,7 @@ public class RegistrationsController : Controller
             return NotFound();
         }
 
-        var registration = await _context.Registrations
-            .FirstOrDefaultAsync(m => m.RegistrationId == registrationid);
+        var registration = await _context.Registrations.FindAsync(registrationid);
         if (registration == null)
         {
             return NotFound();
@@ -150,7 +224,14 @@ public class RegistrationsController : Controller
         return RedirectToAction(nameof(Index));
     }
 
-    private bool RegistrationExists(int? registrationid)
+    private void LoadDropDowns()
+    {
+        ViewData["VolunteerId"] = new SelectList(_context.Volunteers, "VolunteerId", "FullName");
+        ViewData["EventId"] = new SelectList(_context.Events, "EventId", "EventName");
+        ViewData["Statuses"] = new SelectList(new [] { "Registered", "Waitlisted", "Cancelled" });
+    }
+
+    private bool RegistrationExists(int registrationid)
     {
         return _context.Registrations.Any(e => e.RegistrationId == registrationid);
     }
