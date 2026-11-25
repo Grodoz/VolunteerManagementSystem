@@ -75,7 +75,7 @@ The project was built to demonstrate application development, systems analysis, 
 
 ### Registration Dashboard
 
-![Registration Dashboard](https://github.com/Grodoz/VolunteerManagementSystem/blob/master/msedge_hvQ0ClmGAO.png)
+![Registration Dashboard](https://github.com/Grodoz/VolunteerManagementSystem/blob/master/msedge_hvQ0CImGAO.png)
 
 ### Attendance Management
 
