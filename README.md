@@ -71,7 +71,7 @@ The project was built to demonstrate application development, systems analysis, 
 
 ### Volunteer Management
 
-![Volunteer Management](docs/screenshots/volunteers.png)
+![Volunteer Management](https://github.com/Grodoz/VolunteerManagementSystem/blob/master/msedge_ormw6P6b0z.png)
 
 ### Registration Dashboard
 
