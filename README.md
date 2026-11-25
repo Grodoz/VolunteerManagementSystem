@@ -83,7 +83,7 @@ The project was built to demonstrate application development, systems analysis, 
 
 ### Volunteer Hours Report
 
-![Volunteer Hours Report](docs/screenshots/volunteer-hours.png)
+![Volunteer Hours Report](https://github.com/Grodoz/VolunteerManagementSystem/blob/master/msedge_gze65xFhjN.png)
 
 ---
 
